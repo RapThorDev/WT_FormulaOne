@@ -1,4 +1,4 @@
-import 'package:f1_application/tools/DrawTriangle.dart';
+import 'package:f1_application/util/draw_triangle.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 

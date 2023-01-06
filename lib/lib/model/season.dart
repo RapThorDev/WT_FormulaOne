@@ -1,3 +1,5 @@
+import 'package:f1_application/lib/model/driver.dart';
+
 class SeasonModel {
   SeasonModel({
     required this.year,
@@ -20,5 +22,13 @@ class SeasonModel {
 
   String get getShortYear => "'${year.toString().substring(2, 4)}";
 
-}
+  void addDrivers(List<DriverModel> drivers) {
+    for (DriverModel driver in drivers) {
+      addDriver(driver);
+    }
+  }
 
+  void addDriver(DriverModel driver) {
+    if (!driverIds.contains(driver.id)) driverIds.add(driver.id);
+  }
+}

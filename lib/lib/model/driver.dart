@@ -39,6 +39,6 @@ class DriverModel {
 
   String get getYearOfBirth => dateOfBirth.substring(0, 4);
 
-  String get getSearchableParams => "$getFullName $getYearOfBirth $nationality ";
+  String get getSearchableParams => "$getFullName $getYearOfBirth $nationality ".toLowerCase();
 }
 

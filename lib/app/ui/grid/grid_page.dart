@@ -1,16 +1,16 @@
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
-import 'package:f1_application/model/driver.dart';
-import 'package:f1_application/model/season.dart';
-import 'package:f1_application/provider/formula_one_provider.dart';
-import 'package:f1_application/tools/BuildBlur.dart';
-import 'package:f1_application/widget/BackgroundBottom.dart';
-import 'package:f1_application/widget/BackgroundTop.dart';
-import 'package:f1_application/widget/DriverCard.dart';
-import 'package:f1_application/widget/FullPageLoading.dart';
+import 'package:f1_application/app/component/background/background_bottom.dart';
+import 'package:f1_application/app/component/background/background_top.dart';
+import 'package:f1_application/app/component/card/driver_card.dart';
+import 'package:f1_application/app/component/loading/full_page_loading.dart';
+import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
+import 'package:f1_application/lib/datamanagement/repository/season_repository.dart';
+import 'package:f1_application/lib/model/driver.dart';
+import 'package:f1_application/lib/model/season.dart';
+import 'package:f1_application/util/build_blur.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:f1_application/countries.dart' as country;
+import 'package:f1_application/util/countries.dart' as country;
 
 
 class GridScreen extends StatefulWidget {
@@ -21,17 +21,25 @@ class GridScreen extends StatefulWidget {
 }
 
 class _GridScreenState extends State<GridScreen> {
+  TextEditingController searchTextController = TextEditingController();
+  String searchTextString = "";
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<FormulaOneProvider>(context, listen: false).fetchGrid();
-    });
+    SeasonModel? season = Provider.of<SeasonRepository>(context, listen: false).getSelectedSeason;
+    if (season != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Provider.of<GridRepository>(context, listen: false).fetchGrid(season);
+      });
+    }
   }
 
-  late AutoCompleteTextField searchTextField;
-  TextEditingController searchController = TextEditingController();
-  GlobalKey<AutoCompleteTextFieldState<DriverModel>> key = GlobalKey();
+  @override
+  void dispose() {
+    searchTextController.dispose();
+    super.dispose();
+  }
 
   List<Widget> sortAndMakeNationList(Map<String, int> nations) {
     List<Widget> nationList = [];
@@ -108,9 +116,7 @@ class _GridScreenState extends State<GridScreen> {
   }
 
   Widget drawSummary(List<Widget> nations) {
-    Size screenSize = MediaQuery
-        .of(context)
-        .size;
+    Size screenSize = MediaQuery.of(context).size;
 
     return
       Column(
@@ -168,14 +174,18 @@ class _GridScreenState extends State<GridScreen> {
   }
 
   Widget drawDriversAndSummary() {
-    final formulaOneProvider = Provider.of<FormulaOneProvider>(context);
+    final seasonRepository = Provider.of<SeasonRepository>(context);
+    final gridRepository = Provider.of<GridRepository>(context);
 
-    if (formulaOneProvider.isGridFetching) {
+    if (gridRepository.isGridFetching) {
       return const FullPageLoading();
     }
 
-    SeasonModel selectedSeason = formulaOneProvider.getSelectedSeason;
-    List<DriverModel> driverList = formulaOneProvider.getDriverList;
+    SeasonModel? selectedSeason = seasonRepository.getSelectedSeason;
+    List<DriverModel>? driverList = gridRepository.getGridDriverList;
+
+    if (selectedSeason == null) return const SizedBox(child: Text("Not found selected season"),);
+    if (driverList == null) return const SizedBox(child: Text("Not found Grid driver list"),);
 
     List<DriverModel> currentDrivers = [];
     for (var driverId in selectedSeason.driverIds) {
@@ -183,15 +193,19 @@ class _GridScreenState extends State<GridScreen> {
           driverList.firstWhere((driver) => driver.id == driverId));
     }
 
-    if (currentDrivers.isEmpty) {
-      return Container();
-    }
+    if (currentDrivers.isEmpty) return const SizedBox(child: Text("In this season not found any driver\nCome back later", textAlign: TextAlign.center,),);
 
     List<Widget> driverCardsAndSummary = [];
     Map<String, int> summary = {};
 
     for (var driver in currentDrivers) {
-      driverCardsAndSummary.add(DriverCard(driver: driver));
+      if (searchTextString.isNotEmpty) {
+        if (driver.getSearchableParams.contains(searchTextString.toLowerCase())) {
+          driverCardsAndSummary.add(DriverCard(driver: driver));
+        }
+      } else {
+        driverCardsAndSummary.add(DriverCard(driver: driver));
+      }
 
       if (!summary.containsKey(driver.nationality)) {
         summary[driver.nationality] = 1;
@@ -202,71 +216,49 @@ class _GridScreenState extends State<GridScreen> {
 
     List<Widget> nations = sortAndMakeNationList(summary);
 
-    if (searchController.text.isEmpty) {
+    if (searchTextString.isEmpty) {
       driverCardsAndSummary.add(drawSummary(nations));
     }
 
-    driverCardsAndSummary.add(const SizedBox(height: 30,));
+    if (driverCardsAndSummary.isEmpty) {
+      driverCardsAndSummary.add(const SizedBox(height: 30.00, child: Text("Not found anything"),));
+    } else {
+      driverCardsAndSummary.add(const SizedBox(height: 30,));
+    }
 
     return Column(
       children: driverCardsAndSummary,
     );
   }
 
+  Widget searchField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+      child: TextField(
+        controller: searchTextController,
+        decoration: const InputDecoration(
+          hintText: "Name, nationality or year of the birth date",
+          border: OutlineInputBorder(),
+          labelText: "Search",
+          floatingLabelAlignment: FloatingLabelAlignment.center,
+          focusColor: Color(0xff880000),
+          fillColor: Color(0xff880000),
+        ),
+        onChanged: (String value) {
+          setState(() {
+            searchTextString = value;
+          });
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final formulaOneProvider = Provider.of<FormulaOneProvider>(context, listen: false);
-
-    SeasonModel selectedSeason = formulaOneProvider.getSelectedSeason;
-    List<DriverModel> seasonDrivers = selectedSeason.driverIds.map((e) =>
-        formulaOneProvider.getDriverList.firstWhere((element) => element.id == e))
-        .toList(growable: false);
-
     Size screenSize = MediaQuery.of(context).size;
 
-    searchTextField = AutoCompleteTextField<DriverModel>(
-      itemSubmitted: (item) {
-        setState(() {
-          searchController.text = item.getFullName;
-        });
-      },
-      key: key,
-      suggestions: seasonDrivers,
-      itemBuilder: (context, item) {
-        return ListTile(
-          title: Text(item.getFullName),
-          subtitle: Text(
-            "${item.dateOfBirth} ${item.nationality}"
-          ),
-          onTap: () {
-            formulaOneProvider.setSearchedDriver(item);
-          },
-        );
-      },
-      itemSorter: (a, b) {
-        return a.lastName.compareTo(b.lastName);
-      },
-      itemFilter: (item, query) {
-        return item.getSearchableParams.toLowerCase().contains(query.toLowerCase());
-      },
-      style: const TextStyle(
-          color: Color(0xff000000),
-          fontSize: 16.00
-      ),
-      decoration: const InputDecoration(
-        suffixIcon: SizedBox(
-          width: 85.00,
-          height: 60.00,
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-        filled: true,
-        hintText: "Driver name, nationality or year of birth date",
-        hintStyle: TextStyle(color: Color(0xff252525)),
-      ),
-      controller: searchController,
-    );
-
-    DriverModel? searchedDriver = formulaOneProvider.getSearchedDriver;
+    final seasonRepository = Provider.of<SeasonRepository>(context, listen: false);
+    SeasonModel? selectedSeason = seasonRepository.getSelectedSeason;
 
     return Material(
       child: Stack(
@@ -282,15 +274,14 @@ class _GridScreenState extends State<GridScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: screenSize.height * 0.25,),
-                    searchTextField,
-                    searchedDriver == null ?
-                    drawDriversAndSummary() : DriverCard(driver: searchedDriver)
+                    searchField(),
+                    drawDriversAndSummary()
                   ],
                 ),
               ),
             ),
           ),
-          BackgroundTop(title: "${selectedSeason.getShortYear} Grid"),
+          BackgroundTop(title: "${selectedSeason?.getShortYear} Grid"),
         ],
       ),
     );

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:f1_application/constants.dart';
+import 'package:f1_application/util/constants.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -10,7 +10,6 @@ enum GetType {
 }
 
 class ErgastApiClient {
-
   String baseUrl = Constants.apiBaseURL;
 
   Future<http.Response> get({

@@ -1,28 +1,30 @@
-import 'package:f1_application/provider/formula_one_provider.dart';
-import 'package:f1_application/screen/DriverProfileScreen.dart';
-import 'package:f1_application/screen/GridScreen.dart';
-import 'package:f1_application/screen/SeasonsScreen.dart';
+import 'package:f1_application/app/ui/driver_profile/driver_profile_page.dart';
+import 'package:f1_application/app/ui/grid/grid_page.dart';
+import 'package:f1_application/app/ui/seasons/seasons_page.dart';
+import 'package:f1_application/lib/datamanagement/repository/google_image_repository.dart';
+import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
+import 'package:f1_application/lib/datamanagement/repository/season_repository.dart';
+import 'package:f1_application/screen_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'screen_routes.dart';
 
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  final preferences = await SharedPreferences.getInstance();
-  FormulaOneProvider formulaOneProvider = FormulaOneProvider(preferences);
+  GoogleImageRepository googleImageRepository = GoogleImageRepository();
+  SeasonRepository seasonRepository = SeasonRepository();
+  GridRepository gridRepository = GridRepository();
 
-  return runApp(MyApp(preferences, formulaOneProvider));
+  return runApp(MyApp(googleImageRepository, seasonRepository, gridRepository));
 }
 
 class MyApp extends StatefulWidget {
 
-  final SharedPreferences preferences;
-  final FormulaOneProvider formulaOneProvider;
+  final GoogleImageRepository googleImageRepository;
+  final SeasonRepository seasonRepository;
+  final GridRepository gridRepository;
 
-  const MyApp(this.preferences, this.formulaOneProvider, {super.key});
+  const MyApp(this.googleImageRepository, this.seasonRepository, this.gridRepository, {super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -33,7 +35,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => widget.formulaOneProvider)
+        ChangeNotifierProvider(create: (context) => widget.googleImageRepository),
+        ChangeNotifierProvider(create: (context) => widget.seasonRepository),
+        ChangeNotifierProvider(create: (context) => widget.gridRepository),
       ],
       child: Container(
         constraints: const BoxConstraints(maxWidth: 600),
