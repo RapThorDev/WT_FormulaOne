@@ -32,7 +32,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
 
   double flagWidth = 65;
 
-  Widget drawSeparate(
+  Widget separator(
       {required Color color,
       required double verticalMargin,
       required double width,
@@ -144,7 +144,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     ],
                   ),
                 ),
-                drawSeparate(
+                separator(
                     width: screenSize.width * 0.925,
                     color: const Color(0xff000000),
                     verticalMargin: 10),
@@ -183,7 +183,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     ],
                   ),
                 ),
-                drawSeparate(
+                separator(
                     width: screenSize.width * 0.925,
                     color: const Color(0xff000000),
                     verticalMargin: 20),
