@@ -15,6 +15,8 @@ class SeasonsScreen extends StatefulWidget {
 }
 
 class _SeasonsScreenState extends State<SeasonsScreen> {
+  late Size screenSize;
+
   @override
   void initState() {
     super.initState();
@@ -23,8 +25,38 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
     });
   }
 
-  late double screenWidth;
-  late double screenHeight;
+  @override
+  Widget build(BuildContext context) {
+    screenSize = MediaQuery.of(context).size;
+
+    double screenHeight = screenSize.height;
+
+    return Material(
+      child: Stack(
+        children: <Widget>[
+          const BackgroundBottom(),
+          Positioned(
+            child: SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: screenHeight * 0.20,
+                      ),
+                      seasonCardsColumn(context)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          BackgroundTop(title: widget.title),
+        ],
+      ),
+    );
+  }
 
   Widget seasonCardsColumn(BuildContext context) {
     final seasonRepository = Provider.of<SeasonRepository>(context);
@@ -48,38 +80,6 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: seasonCards,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-
-    return Material(
-      child: Stack(
-        children: <Widget>[
-          const BackgroundBottom(),
-          Positioned(
-            child: SafeArea(
-              child: Center(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: screenHeight * 0.20,
-                      ),
-                      seasonCardsColumn(context)
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const BackgroundTop(title: "Seasons"),
-        ],
-      ),
     );
   }
 }
