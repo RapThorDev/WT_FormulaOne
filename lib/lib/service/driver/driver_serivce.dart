@@ -1,7 +1,7 @@
 import 'package:f1_application/lib/model/driver.dart';
 
 class DriverService {
-  final DriverModel _driver;
+  final Driver _driver;
 
   DriverService(this._driver);
 

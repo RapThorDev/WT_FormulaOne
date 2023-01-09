@@ -11,7 +11,7 @@ import 'package:f1_application/util/intent_action.dart';
 class SeasonCard extends StatelessWidget {
   const SeasonCard({Key? key, required this.season}) : super(key: key);
 
-  final SeasonModel season;
+  final Season season;
 
   String getImagePath(String yearString) {
     int year = int.parse(yearString);

@@ -1,6 +1,5 @@
-class DriverModel {
-  /// Returns a new [DriverModel] instance.
-  DriverModel({
+class Driver {
+  Driver({
     required this.id,
     this.permanentNumber = "",
     this.code = "",
@@ -20,8 +19,7 @@ class DriverModel {
   String dateOfBirth;
   String nationality;
 
-  /// Returns a new [DriverModel] instance and imports its values from
-  static DriverModel fromJson(Map<String, dynamic> json) => DriverModel(
+  static Driver fromJson(Map<String, dynamic> json) => Driver(
     id: json[r'driverId'],
     permanentNumber: json[r'permanentNumber'] ?? "",
     code: json[r'code'] ?? "",
@@ -32,8 +30,8 @@ class DriverModel {
     nationality: json[r'nationality']
   );
 
-  static List<DriverModel> listFromJson(List<dynamic> json) =>
-      json.map((e) => DriverModel.fromJson(e)).toList(growable: true);
+  static List<Driver> listFromJson(List<dynamic> json) =>
+      json.map((e) => Driver.fromJson(e)).toList(growable: true);
 
   String get fullName => "$lastName $firstName";
 

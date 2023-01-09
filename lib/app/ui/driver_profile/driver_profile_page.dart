@@ -24,7 +24,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   @override
   void initState() {
     super.initState();
-    DriverModel? selectedDriver = Provider.of<GridRepository>(context, listen: false).getSelectedDriver;
+    Driver? selectedDriver = Provider.of<GridRepository>(context, listen: false).getSelectedDriver;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<GoogleImageRepository>(context, listen: false).fetchGoogleImage(selectedDriver!.lastName);
     });
@@ -109,7 +109,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
 
 
     final gridRepository = Provider.of<GridRepository>(context, listen: false);
-    DriverModel? selectedDriver = gridRepository.getSelectedDriver;
+    Driver? selectedDriver = gridRepository.getSelectedDriver;
 
     Size screenSize = MediaQuery.of(context).size;
 

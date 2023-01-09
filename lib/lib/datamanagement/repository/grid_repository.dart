@@ -12,7 +12,7 @@ class GridRepository with ChangeNotifier {
   bool _gridFetching = false;
   bool get isGridFetching => _gridFetching;
 
-  Future<void> fetchGrid(SeasonModel season) async {
+  Future<void> fetchGrid(Season season) async {
     try {
       _gridFetching = true;
       notifyListeners();
@@ -20,7 +20,7 @@ class GridRepository with ChangeNotifier {
           await clientErgast.get(type: GetType.grid, year: int.parse(season.year));
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonObject = jsonDecode(response.body);
-        List<DriverModel> drivers = DriverModel.listFromJson(
+        List<Driver> drivers = Driver.listFromJson(
             jsonObject["MRData"]["DriverTable"]["Drivers"]);
         _gridDriverList = drivers;
         season.addDrivers(drivers);
@@ -32,13 +32,13 @@ class GridRepository with ChangeNotifier {
     notifyListeners();
   }
 
-  List<DriverModel>? _gridDriverList;
-  List<DriverModel>? get getGridDriverList => _gridDriverList;
+  List<Driver>? _gridDriverList;
+  List<Driver>? get getGridDriverList => _gridDriverList;
 
-  DriverModel? _selectedDriver;
-  DriverModel? get getSelectedDriver => _selectedDriver;
+  Driver? _selectedDriver;
+  Driver? get getSelectedDriver => _selectedDriver;
 
-  void setSelectedDriver(DriverModel driver) {
+  void setSelectedDriver(Driver driver) {
     _selectedDriver = driver;
     notifyListeners();
   }

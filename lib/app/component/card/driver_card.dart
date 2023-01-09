@@ -15,7 +15,7 @@ class DriverCard extends StatelessWidget {
     required this.driver
   });
 
-  final DriverModel driver;
+  final Driver driver;
 
 
   @override

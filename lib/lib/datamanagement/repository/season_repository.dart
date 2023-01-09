@@ -7,8 +7,8 @@ import 'package:flutter/cupertino.dart';
 class SeasonRepository with ChangeNotifier {
   ErgastApiClient clientErgast = ErgastApiClient();
 
-  List<SeasonModel>? _seasonList;
-  List<SeasonModel>? get getSeasonList => _seasonList;
+  List<Season>? _seasonList;
+  List<Season>? get getSeasonList => _seasonList;
 
   void sortSeasonListDescByYear() => _seasonList?.sort((a, b) => Comparable.compare(b.year, a.year));
 
@@ -22,7 +22,7 @@ class SeasonRepository with ChangeNotifier {
       final response = await clientErgast.get(type: GetType.season);
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonObject = jsonDecode(response.body);
-        _seasonList = SeasonModel.listFromJson(
+        _seasonList = Season.listFromJson(
             jsonObject["MRData"]["SeasonTable"]["Seasons"]);
         sortSeasonListDescByYear();
       }
@@ -33,15 +33,15 @@ class SeasonRepository with ChangeNotifier {
     notifyListeners();
   }
 
-  SeasonModel? _selectedSeason;
-  SeasonModel? get getSelectedSeason => _selectedSeason;
+  Season? _selectedSeason;
+  Season? get getSelectedSeason => _selectedSeason;
 
-  void setSelectedSeason(SeasonModel season) {
+  void setSelectedSeason(Season season) {
     _selectedSeason = season;
     notifyListeners();
   }
 
-  void addDriversToSelectedSeason(List<DriverModel> drivers) {
+  void addDriversToSelectedSeason(List<Driver> drivers) {
     _selectedSeason!.addDrivers(drivers);
   }
 }

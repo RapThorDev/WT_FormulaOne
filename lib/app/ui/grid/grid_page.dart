@@ -28,7 +28,7 @@ class _GridScreenState extends State<GridScreen> {
   @override
   void initState() {
     super.initState();
-    SeasonModel? season = Provider.of<SeasonRepository>(context, listen: false).getSelectedSeason;
+    Season? season = Provider.of<SeasonRepository>(context, listen: false).getSelectedSeason;
     if (season != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Provider.of<GridRepository>(context, listen: false).fetchGrid(season);
@@ -182,13 +182,13 @@ class _GridScreenState extends State<GridScreen> {
       return const FullPageLoading();
     }
 
-    SeasonModel? selectedSeason = seasonRepository.getSelectedSeason;
-    List<DriverModel>? driverList = gridRepository.getGridDriverList;
+    Season? selectedSeason = seasonRepository.getSelectedSeason;
+    List<Driver>? driverList = gridRepository.getGridDriverList;
 
     if (selectedSeason == null) return const SizedBox(child: Text("Not found selected season"),);
     if (driverList == null) return const SizedBox(child: Text("Not found Grid driver list"),);
 
-    List<DriverModel> currentDrivers = [];
+    List<Driver> currentDrivers = [];
     for (var driverId in selectedSeason.driverIds) {
       currentDrivers.add(
           driverList.firstWhere((driver) => driver.id == driverId));
@@ -260,7 +260,7 @@ class _GridScreenState extends State<GridScreen> {
     Size screenSize = MediaQuery.of(context).size;
 
     final seasonRepository = Provider.of<SeasonRepository>(context, listen: false);
-    SeasonModel? selectedSeason = seasonRepository.getSelectedSeason;
+    Season? selectedSeason = seasonRepository.getSelectedSeason;
 
     return Material(
       child: Stack(
