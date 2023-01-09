@@ -21,6 +21,8 @@ class DriverProfileScreen extends StatefulWidget {
 }
 
 class _DriverProfileScreenState extends State<DriverProfileScreen> {
+  double flagWidth = 65;
+
   @override
   void initState() {
     super.initState();
@@ -30,13 +32,24 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     });
   }
 
-  double flagWidth = 65;
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Stack(
+        children: [
+          const BackgroundBottom(),
+          const BackgroundTop(title: ""),
+          _driverProfile(),
+        ],
+      ),
+    );
+  }
 
   Widget _separator(
       {required Color color,
-      required double verticalMargin,
-      required double width,
-      double height = 2}) {
+        required double verticalMargin,
+        required double width,
+        double height = 2}) {
     return Column(
       children: [
         Container(
@@ -192,18 +205,5 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
             ),
           ),
         ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Stack(
-        children: [
-          const BackgroundBottom(),
-          const BackgroundTop(title: ""),
-          _driverProfile(),
-        ],
-      ),
-    );
   }
 }
