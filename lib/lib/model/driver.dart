@@ -35,10 +35,8 @@ class DriverModel {
   static List<DriverModel> listFromJson(List<dynamic> json) =>
       json.map((e) => DriverModel.fromJson(e)).toList(growable: true);
 
-  String get getFullName => "$lastName $firstName";
+  String get fullName => "$lastName $firstName";
 
-  String get getYearOfBirth => dateOfBirth.substring(0, 4);
-
-  String get getSearchableParams => "$getFullName $getYearOfBirth $nationality ".toLowerCase();
+  String get yearOfBirth => dateOfBirth.substring(0, 4);
 }
 

@@ -6,6 +6,7 @@ import 'package:f1_application/lib/datamanagement/repository/grid_repository.dar
 import 'package:f1_application/lib/datamanagement/repository/season_repository.dart';
 import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/lib/model/season.dart';
+import 'package:f1_application/lib/service/driver/driver_serivce.dart';
 import 'package:f1_application/util/build_blur.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
@@ -199,8 +200,9 @@ class _GridScreenState extends State<GridScreen> {
     Map<String, int> summary = {};
 
     for (var driver in currentDrivers) {
+      final DriverService driverService = DriverService(driver);
       if (searchTextString.isNotEmpty) {
-        if (driver.getSearchableParams.contains(searchTextString.toLowerCase())) {
+        if (driverService.isExist(searchTextString.toLowerCase())) {
           driverCardsAndSummary.add(DriverCard(driver: driver));
         }
       } else {
