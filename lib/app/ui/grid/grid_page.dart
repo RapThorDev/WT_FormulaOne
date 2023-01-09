@@ -42,6 +42,40 @@ class _GridScreenState extends State<GridScreen> {
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+
+    final seasonRepository = Provider.of<SeasonRepository>(context, listen: false);
+    Season? selectedSeason = seasonRepository.getSelectedSeason;
+
+    return Material(
+      child: Stack(
+        children: <Widget>[
+          const BackgroundBottom(),
+          Positioned(
+            child: SafeArea(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: screenSize.height * 0.25,),
+                    searchField(),
+                    drawDriversAndSummary()
+                  ],
+                ),
+              ),
+            ),
+          ),
+          BackgroundTop(title: "${selectedSeason?.shortYear} Grid"),
+        ],
+      ),
+    );
+  }
+
   List<Widget> sortAndMakeNationList(Map<String, int> nations) {
     List<Widget> nationList = [];
 
@@ -255,37 +289,4 @@ class _GridScreenState extends State<GridScreen> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-
-    final seasonRepository = Provider.of<SeasonRepository>(context, listen: false);
-    Season? selectedSeason = seasonRepository.getSelectedSeason;
-
-    return Material(
-      child: Stack(
-        children: <Widget>[
-          const BackgroundBottom(),
-          Positioned(
-            child: SafeArea(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: screenSize.height * 0.25,),
-                    searchField(),
-                    drawDriversAndSummary()
-                  ],
-                ),
-              ),
-            ),
-          ),
-          BackgroundTop(title: "${selectedSeason?.shortYear} Grid"),
-        ],
-      ),
-    );
-  }
 }
