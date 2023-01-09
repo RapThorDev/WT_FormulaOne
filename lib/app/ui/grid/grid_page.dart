@@ -283,7 +283,7 @@ class _GridScreenState extends State<GridScreen> {
               ),
             ),
           ),
-          BackgroundTop(title: "${selectedSeason?.getShortYear} Grid"),
+          BackgroundTop(title: "${selectedSeason?.shortYear} Grid"),
         ],
       ),
     );

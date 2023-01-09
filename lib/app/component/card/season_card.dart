@@ -104,7 +104,7 @@ class SeasonCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
                             Text(
-                              width > 500 ? season.year : season.getShortYear,
+                              width > 500 ? season.year : season.shortYear,
                               textAlign: TextAlign.right,
                               style: fontStyle.copyWith(fontSize: 102, height: 0.3),
                             ),

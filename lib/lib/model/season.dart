@@ -20,7 +20,7 @@ class SeasonModel {
   static List<SeasonModel> listFromJson(List<dynamic> json) =>
       json.map((e) => SeasonModel.fromJson(e)).toList(growable: true);
 
-  String get getShortYear => "'${year.toString().substring(2, 4)}";
+  String get shortYear => "'${year.toString().substring(2, 4)}";
 
   void addDrivers(List<DriverModel> drivers) {
     for (DriverModel driver in drivers) {
