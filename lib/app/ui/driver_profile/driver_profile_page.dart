@@ -32,7 +32,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
 
   double flagWidth = 65;
 
-  Widget separator(
+  Widget _separator(
       {required Color color,
       required double verticalMargin,
       required double width,
@@ -49,7 +49,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     );
   }
 
-  Widget drawName(String firstName, String lastName) {
+  Widget _driverName(String firstName, String lastName) {
     TextStyle textStyle = const TextStyle(
       color: Color(0xff000000),
       fontFamily: "Formula1",
@@ -80,7 +80,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     );
   }
 
-  Widget drawGoogleImage() {
+  Widget _driverProfileImage() {
     final googleImageRepository = Provider.of<GoogleImageRepository>(context);
 
     if (googleImageRepository.isGoogleImageFetching) {
@@ -105,7 +105,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     );
   }
 
-  Widget drawDriverProfile() {
+  Widget _driverProfile() {
 
 
     final gridRepository = Provider.of<GridRepository>(context, listen: false);
@@ -133,7 +133,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      drawName(selectedDriver!.firstName,
+                      _driverName(selectedDriver!.firstName,
                           selectedDriver!.lastName),
                       Flag.fromCode(
                         country.Countries.getByNationality(
@@ -144,7 +144,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     ],
                   ),
                 ),
-                separator(
+                _separator(
                     width: screenSize.width * 0.925,
                     color: const Color(0xff000000),
                     verticalMargin: 10),
@@ -183,11 +183,11 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     ],
                   ),
                 ),
-                separator(
+                _separator(
                     width: screenSize.width * 0.925,
                     color: const Color(0xff000000),
                     verticalMargin: 20),
-                drawGoogleImage(),
+                _driverProfileImage(),
               ],
             ),
           ),
@@ -201,7 +201,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
         children: [
           const BackgroundBottom(),
           const BackgroundTop(title: ""),
-          drawDriverProfile(),
+          _driverProfile(),
         ],
       ),
     );
