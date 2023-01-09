@@ -15,7 +15,7 @@ class SeasonsScreen extends StatefulWidget {
 }
 
 class _SeasonsScreenState extends State<SeasonsScreen> {
-  late Size screenSize;
+  late Size _screenSize;
 
   @override
   void initState() {
@@ -27,9 +27,9 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    screenSize = MediaQuery.of(context).size;
+    _screenSize = MediaQuery.of(context).size;
 
-    double screenHeight = screenSize.height;
+    double screenHeight = _screenSize.height;
 
     return Material(
       child: Stack(
