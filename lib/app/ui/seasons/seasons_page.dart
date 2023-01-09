@@ -45,7 +45,7 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
                       SizedBox(
                         height: screenHeight * 0.20,
                       ),
-                      seasonCardsColumn(context)
+                      _seasonCardsColumn(context)
                     ],
                   ),
                 ),
@@ -58,7 +58,7 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
     );
   }
 
-  Widget seasonCardsColumn(BuildContext context) {
+  Widget _seasonCardsColumn(BuildContext context) {
     final seasonRepository = Provider.of<SeasonRepository>(context);
 
     if (seasonRepository.isSeasonsFetching || seasonRepository.getSeasonList == null) {
