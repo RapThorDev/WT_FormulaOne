@@ -1,5 +1,4 @@
 import 'package:f1_application/lib/datamanagement/repository/season_repository.dart';
-import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/lib/model/season.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -31,8 +30,4 @@ class SeasonService with ChangeNotifier {
   }
 
   void sortSeasonListDescByYear() => _seasons?.sort((a, b) => Comparable.compare(b.year, a.year));
-
-  void addDriversToSelectedSeason(List<Driver> drivers) {
-    _selectedSeason!.addDrivers(drivers);
-  }
 }

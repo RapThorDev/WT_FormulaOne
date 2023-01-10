@@ -1,5 +1,3 @@
-import 'package:f1_application/lib/model/driver.dart';
-
 class Season {
   Season({
     required this.year,
@@ -21,14 +19,4 @@ class Season {
       json.map((e) => Season.fromJson(e)).toList(growable: true);
 
   String get shortYear => "'${year.toString().substring(2, 4)}";
-
-  void addDrivers(List<Driver> drivers) {
-    for (Driver driver in drivers) {
-      addDriver(driver);
-    }
-  }
-
-  void addDriver(Driver driver) {
-    if (!driverIds.contains(driver.id)) driverIds.add(driver.id);
-  }
 }
