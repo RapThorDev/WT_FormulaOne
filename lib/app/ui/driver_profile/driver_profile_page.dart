@@ -99,9 +99,10 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   }
 
   Widget _driverProfileImage() {
+    final driverProfileService = Provider.of<DriverProfileService>(context);
     final driverProfileViewModel = DriverProfileViewModel(context);
 
-    if (driverProfileViewModel.isDriverProfileFetching) {
+    if (driverProfileService.isGoogleImageFetching) {
       return const FullPageLoading();
     }
 

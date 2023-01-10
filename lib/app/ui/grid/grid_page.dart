@@ -5,10 +5,10 @@ import 'package:f1_application/app/component/loading/full_page_loading.dart';
 import 'package:f1_application/app/ui/grid/components/nation.dart';
 import 'package:f1_application/app/ui/grid/components/summary.dart';
 import 'package:f1_application/app/ui/grid/grid_view_model.dart';
-import 'package:f1_application/lib/datamanagement/repository/season_repository.dart';
 import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/lib/model/season.dart';
 import 'package:f1_application/lib/service/grid/grid_service.dart';
+import 'package:f1_application/lib/service/season/season_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +27,7 @@ class _GridScreenState extends State<GridScreen> {
   @override
   void initState() {
     super.initState();
-    Season? season = Provider.of<SeasonRepository>(context, listen: false).getSelectedSeason;
+    Season? season = Provider.of<SeasonService>(context, listen: false).getSelectedSeason;
     if (season != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Provider.of<GridService>(context, listen: false).fetchGrid(int.parse(season.year));
@@ -45,8 +45,7 @@ class _GridScreenState extends State<GridScreen> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
 
-    final seasonRepository = Provider.of<SeasonRepository>(context, listen: false);
-    Season? selectedSeason = seasonRepository.getSelectedSeason;
+    Season? selectedSeason = GridViewModel(context).selectedSeason;
 
     return Material(
       child: Stack(
@@ -113,9 +112,10 @@ class _GridScreenState extends State<GridScreen> {
   }
 
   Widget _drivers() {
+    final gridService = Provider.of<GridService>(context);
     final gridViewModel = GridViewModel(context);
 
-    if (gridViewModel.isGridFetching) {
+    if (gridService.isGridFetching) {
       return const FullPageLoading();
     }
 

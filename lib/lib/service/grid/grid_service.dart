@@ -1,7 +1,6 @@
 import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
 import 'package:f1_application/lib/model/driver.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:developer';
 
 class GridService with ChangeNotifier {
   GridService();
@@ -20,9 +19,7 @@ class GridService with ChangeNotifier {
 
     _gridFetching = true;
     notifyListeners();
-    gridRepository.fetchGrid(seasonYear)
-      ..then((driversList) => _drivers = driversList)
-      ..catchError((e) { log("Error", error: e); });
+    _drivers = await gridRepository.fetchGrid(seasonYear);
     _gridFetching = false;
     notifyListeners();
   }

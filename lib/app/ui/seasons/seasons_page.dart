@@ -1,7 +1,8 @@
 import 'package:f1_application/app/component/background/background_bottom.dart';
 import 'package:f1_application/app/component/background/background_top.dart';
 import 'package:f1_application/app/component/card/season_card.dart';
-import 'package:f1_application/lib/datamanagement/repository/season_repository.dart';
+import 'package:f1_application/app/ui/seasons/seasons_view_model.dart';
+import 'package:f1_application/lib/service/season/season_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,7 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<SeasonRepository>(context, listen: false).fetchSeasons();
+      Provider.of<SeasonService>(context, listen: false).fetchSeasons();
     });
   }
 
@@ -45,7 +46,7 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
                       SizedBox(
                         height: screenHeight * 0.20,
                       ),
-                      _seasonCardsColumn(context)
+                      _seasonCardsColumn()
                     ],
                   ),
                 ),
@@ -58,10 +59,11 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
     );
   }
 
-  Widget _seasonCardsColumn(BuildContext context) {
-    final seasonRepository = Provider.of<SeasonRepository>(context);
+  Widget _seasonCardsColumn() {
+    final seasonService = Provider.of<SeasonService>(context);
+    final seasonViewModel = SeasonViewModel(context);
 
-    if (seasonRepository.isSeasonsFetching || seasonRepository.getSeasonList == null) {
+    if (seasonService.isSeasonsFetching) {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -71,9 +73,11 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
       );
     }
 
+    seasonViewModel.orderSeasonsDescByYear();
+
     List<Widget> seasonCards = [];
 
-    for (var element in seasonRepository.getSeasonList!) {
+    for (var element in seasonViewModel.seasons) {
       seasonCards.add(SeasonCard(season: element));
     }
 

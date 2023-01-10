@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/lib/network/api/ergast_api_client.dart';
-import 'package:flutter/cupertino.dart';
 
 class GridRepository {
   GridRepository();
