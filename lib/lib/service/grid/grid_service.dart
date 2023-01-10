@@ -1,24 +1,33 @@
 import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
 import 'package:f1_application/lib/model/driver.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:developer';
 
-class GridService {
-  final GridRepository _gridRepository;
+class GridService with ChangeNotifier {
+  GridService();
 
-  GridService(this._gridRepository);
+  bool _gridFetching = false;
+  bool get isGridFetching => _gridFetching;
 
-  List<Driver> get drivers => _gridRepository.getGridDriverList ?? [];
+  List<Driver>? _drivers;
+  List<Driver> get drivers => _drivers ?? [];
 
-  List<Driver> relevantDriversByExpression(String expression) => drivers.where((driver) => _isRelevantDriver(driver, expression)).toList() ?? [];
+  Driver? _selectedDriver;
+  Driver? get selectedDriver => _selectedDriver;
 
-  bool _isRelevantDriver(Driver driver, String expression) {
-    final List<String> searchableParams = [
-      driver.fullName.toLowerCase(),
-      driver.yearOfBirth,
-      driver.nationality.toLowerCase()
-    ];
+  Future<void> fetchGrid(int seasonYear) async {
+    final gridRepository = GridRepository();
 
-    return searchableParams.any((String param) => param.contains(expression.toLowerCase()));
+    _gridFetching = true;
+    notifyListeners();
+    gridRepository.fetchGrid(seasonYear)
+      ..then((driversList) => _drivers = driversList)
+      ..catchError((e) { log("Error", error: e); });
+    _gridFetching = false;
+    notifyListeners();
   }
+
+  List<Driver> relevantDriversByExpression(String expression) => drivers.where((driver) => _isRelevantDriver(driver, expression)).toList();
 
   Map<String, int?> nationsSummary() {
     Map<String, int> nations = _driversNationsGroup();
@@ -28,6 +37,21 @@ class GridService {
     Map<String, int?> sortedNations = { for (var key in sortedKeys) key: nations[key]};
 
     return sortedNations;
+  }
+
+  void setSelectedDriver(Driver driver) {
+    _selectedDriver = driver;
+    notifyListeners();
+  }
+
+  bool _isRelevantDriver(Driver driver, String expression) {
+    final List<String> searchableParams = [
+      driver.fullName.toLowerCase(),
+      driver.yearOfBirth,
+      driver.nationality.toLowerCase()
+    ];
+
+    return searchableParams.any((String param) => param.contains(expression.toLowerCase()));
   }
 
   Map<String, int> _driversNationsGroup() {

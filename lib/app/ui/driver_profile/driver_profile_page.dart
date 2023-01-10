@@ -9,6 +9,7 @@ import 'package:f1_application/lib/datamanagement/repository/grid_repository.dar
 import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/app/ui/driver_profile/component/driver_code.dart';
 import 'package:f1_application/lib/service/driver_profile/driver_profile_service.dart';
+import 'package:f1_application/lib/service/grid/grid_service.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   @override
   void initState() {
     super.initState();
-    Driver? selectedDriver = Provider.of<GridRepository>(context, listen: false).getSelectedDriver;
+    Driver? selectedDriver = Provider.of<GridService>(context, listen: false).selectedDriver;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // TODO: Bloc használata esetén a Provider package már felesleges
       Provider.of<DriverProfileService>(context, listen: false).fetchDriverProfileImage(selectedDriver!.lastName);
@@ -98,13 +99,12 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   }
 
   Widget _driverProfileImage() {
-    final driverProfileService = Provider.of<DriverProfileService>(context);
+    final driverProfileViewModel = DriverProfileViewModel(context);
 
-    if (driverProfileService.isGoogleImageFetching) {
+    if (driverProfileViewModel.isDriverProfileFetching) {
       return const FullPageLoading();
     }
 
-    final driverProfileViewModel = DriverProfileViewModel();
     String? imageUrl = driverProfileViewModel.imageUrl;
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -124,14 +124,15 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   }
 
   Widget _driverProfile() {
-
-
-    final gridRepository = Provider.of<GridRepository>(context, listen: false);
-    Driver? selectedDriver = gridRepository.getSelectedDriver;
+    Driver? driver = DriverProfileViewModel(context).driver;
 
     Size screenSize = MediaQuery.of(context).size;
 
     TextStyle textStyle = TextStyle(fontFamily: "Formula1");
+    
+    if (driver == null) {
+      return const Center(child: Text("Not selected any driver"),);
+    }
 
     return Align(
         alignment: Alignment.center,
@@ -151,11 +152,11 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      _driverName(selectedDriver!.firstName,
-                          selectedDriver!.lastName),
+                      _driverName(driver.firstName,
+                          driver.lastName),
                       Flag.fromCode(
                         country.Countries.getByNationality(
-                            selectedDriver!.nationality)["flagsCode"],
+                            driver.nationality)["flagsCode"],
                         width: flagWidth,
                         height: 50,
                       )
@@ -174,8 +175,8 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      selectedDriver!.code.isNotEmpty
-                          ? DriverCode(driverCode: selectedDriver!.code)
+                      driver.code.isNotEmpty
+                          ? DriverCode(driverCode: driver.code)
                           : Container(),
                       Column(
                         mainAxisSize: MainAxisSize.max,
@@ -183,18 +184,18 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            selectedDriver!.dateOfBirth,
+                            driver.dateOfBirth,
                             style: textStyle.copyWith(fontSize: 24),
                           ),
                           Text(
-                            "(age ${AgeCalculator.age(DateTime.parse(selectedDriver!.dateOfBirth)).years})",
+                            "(age ${AgeCalculator.age(DateTime.parse(driver.dateOfBirth)).years})",
                             style: textStyle.copyWith(fontSize: 18),
                           ),
                         ],
                       ),
-                      selectedDriver!.permanentNumber.isNotEmpty
+                      driver.permanentNumber.isNotEmpty
                           ? Text(
-                        selectedDriver!.permanentNumber,
+                        driver.permanentNumber,
                         style: textStyle.copyWith(fontSize: 24),
                       )
                           : Container(),

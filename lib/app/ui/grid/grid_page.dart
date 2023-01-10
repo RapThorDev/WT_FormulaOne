@@ -4,12 +4,11 @@ import 'package:f1_application/app/component/card/driver_card.dart';
 import 'package:f1_application/app/component/loading/full_page_loading.dart';
 import 'package:f1_application/app/ui/grid/components/nation.dart';
 import 'package:f1_application/app/ui/grid/components/summary.dart';
-import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
+import 'package:f1_application/app/ui/grid/grid_view_model.dart';
 import 'package:f1_application/lib/datamanagement/repository/season_repository.dart';
 import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/lib/model/season.dart';
 import 'package:f1_application/lib/service/grid/grid_service.dart';
-import 'package:f1_application/util/build_blur.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +30,7 @@ class _GridScreenState extends State<GridScreen> {
     Season? season = Provider.of<SeasonRepository>(context, listen: false).getSelectedSeason;
     if (season != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Provider.of<GridRepository>(context, listen: false).fetchGrid(season);
+        Provider.of<GridService>(context, listen: false).fetchGrid(int.parse(season.year));
       });
     }
   }
@@ -78,13 +77,11 @@ class _GridScreenState extends State<GridScreen> {
   }
 
   Widget _nations() {
-    final gridRepository = Provider.of<GridRepository>(context);
+    final gridService = Provider.of<GridService>(context);
 
-    if (gridRepository.isGridFetching) {
+    if (gridService.isGridFetching) {
       return Container();
     }
-
-    final gridService = GridService(gridRepository);
 
     List<Widget> nationList = [];
 
@@ -102,12 +99,10 @@ class _GridScreenState extends State<GridScreen> {
   }
 
   Widget _summary() {
-    final gridRepository = Provider.of<GridRepository>(context);
-
-    final gridService = GridService(gridRepository);
+    final gridService = Provider.of<GridService>(context);
 
     if (
-    gridRepository.isGridFetching
+    gridService.isGridFetching
     || searchTextString.isNotEmpty
     || gridService.drivers.isEmpty
     ) {
@@ -118,15 +113,13 @@ class _GridScreenState extends State<GridScreen> {
   }
 
   Widget _drivers() {
-    final gridRepository = Provider.of<GridRepository>(context);
+    final gridViewModel = GridViewModel(context);
 
-    if (gridRepository.isGridFetching) {
+    if (gridViewModel.isGridFetching) {
       return const FullPageLoading();
     }
 
-    final gridService = GridService(gridRepository);
-
-    if (gridService.drivers.isEmpty) {
+    if (gridViewModel.drivers.isEmpty) {
       return const SizedBox(
         child: Text(
           "In this season not found any driver\n"
@@ -138,9 +131,9 @@ class _GridScreenState extends State<GridScreen> {
     List<Widget> driverCards = [];
 
     if (searchTextString.isEmpty) {
-      driverCards = gridService.drivers.map((driver) => DriverCard(driver: driver)).toList();
+      driverCards = gridViewModel.drivers.map((driver) => DriverCard(driver: driver)).toList();
     } else {
-      driverCards = gridService.relevantDriversByExpression(searchTextString).map((Driver driver) => DriverCard(driver: driver)).toList();
+      driverCards = gridViewModel.relevantDriversByExpression(searchTextString).map((Driver driver) => DriverCard(driver: driver)).toList();
     }
 
     if (driverCards.isEmpty) {

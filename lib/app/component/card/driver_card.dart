@@ -1,5 +1,5 @@
 
-import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
+import 'package:f1_application/lib/service/grid/grid_service.dart';
 import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/app/ui/driver_profile/driver_profile_page.dart';
 import 'package:f1_application/util/build_blur.dart';
@@ -37,7 +37,7 @@ class DriverCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Provider.of<GridRepository>(context, listen: false).setSelectedDriver(driver);
+        Provider.of<GridService>(context, listen: false).setSelectedDriver(driver);
         Navigator.push(context, MaterialPageRoute(builder: (context) => const DriverProfileScreen()));
       },
       child: Container(
