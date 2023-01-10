@@ -4,14 +4,17 @@ import 'package:f1_application/app/component/background/background_bottom.dart';
 import 'package:f1_application/app/component/background/background_top.dart';
 import 'package:f1_application/app/component/loading/full_page_loading.dart';
 import 'package:f1_application/generated/assets.dart';
-import 'package:f1_application/lib/datamanagement/repository/google_image_repository.dart';
+import 'package:f1_application/lib/datamanagement/repository/driver_profile_repository.dart';
 import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
 import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/app/ui/driver_profile/component/driver_code.dart';
+import 'package:f1_application/lib/service/driver_profile/driver_profile_service.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:f1_application/util/countries.dart' as country;
+
+import 'driver_profile_view_model.dart';
 
 class DriverProfileScreen extends StatefulWidget {
   const DriverProfileScreen({Key? key}) : super(key: key);
@@ -28,7 +31,8 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
     super.initState();
     Driver? selectedDriver = Provider.of<GridRepository>(context, listen: false).getSelectedDriver;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<GoogleImageRepository>(context, listen: false).fetchGoogleImage(selectedDriver!.lastName);
+      // TODO: Bloc használata esetén a Provider package már felesleges
+      Provider.of<DriverProfileService>(context, listen: false).fetchDriverProfileImage(selectedDriver!.lastName);
     });
   }
 
@@ -94,16 +98,17 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   }
 
   Widget _driverProfileImage() {
-    final googleImageRepository = Provider.of<GoogleImageRepository>(context);
+    final driverProfileService = Provider.of<DriverProfileService>(context);
 
-    if (googleImageRepository.isGoogleImageFetching) {
+    if (driverProfileService.isGoogleImageFetching) {
       return const FullPageLoading();
     }
 
-    String? imageUrl = googleImageRepository.getGoogleImageUrl;
+    final driverProfileViewModel = DriverProfileViewModel();
+    String? imageUrl = driverProfileViewModel.imageUrl;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    if (imageUrl == null || imageUrl.isEmpty) {
+    if (imageUrl.isEmpty) {
       return Image.asset(
         Assets.imagesDefault,
         width: screenWidth * 0.9,

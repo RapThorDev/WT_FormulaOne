@@ -1,9 +1,9 @@
 import 'package:f1_application/app/ui/driver_profile/driver_profile_page.dart';
 import 'package:f1_application/app/ui/grid/grid_page.dart';
 import 'package:f1_application/app/ui/seasons/seasons_page.dart';
-import 'package:f1_application/lib/datamanagement/repository/google_image_repository.dart';
 import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
 import 'package:f1_application/lib/datamanagement/repository/season_repository.dart';
+import 'package:f1_application/lib/service/driver_profile/driver_profile_service.dart';
 import 'package:f1_application/screen_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,20 +11,21 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  GoogleImageRepository googleImageRepository = GoogleImageRepository();
   SeasonRepository seasonRepository = SeasonRepository();
   GridRepository gridRepository = GridRepository();
+  DriverProfileService driverProfileService = DriverProfileService();
 
-  return runApp(MyApp(googleImageRepository, seasonRepository, gridRepository));
+  return runApp(MyApp(seasonRepository, gridRepository, driverProfileService));
 }
 
 class MyApp extends StatefulWidget {
 
-  final GoogleImageRepository googleImageRepository;
   final SeasonRepository seasonRepository;
   final GridRepository gridRepository;
 
-  const MyApp(this.googleImageRepository, this.seasonRepository, this.gridRepository, {super.key});
+  final DriverProfileService driverProfileService;
+
+  const MyApp(this.seasonRepository, this.gridRepository, this.driverProfileService, {super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -35,9 +36,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => widget.googleImageRepository),
         ChangeNotifierProvider(create: (context) => widget.seasonRepository),
         ChangeNotifierProvider(create: (context) => widget.gridRepository),
+        ChangeNotifierProvider(create: (context) => widget.driverProfileService),
       ],
       child: Container(
         constraints: const BoxConstraints(maxWidth: 600),
