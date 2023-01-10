@@ -26,12 +26,12 @@ class GridService with ChangeNotifier {
 
   List<Driver> relevantDriversByExpression(String expression) => drivers.where((driver) => _isRelevantDriver(driver, expression)).toList();
 
-  Map<String, int?> nationsSummary() {
+  Map<String, int> nationsSummary() {
     Map<String, int> nations = _driversNationsGroup();
 
     List<String> sortedKeys = nations.keys.toList(growable: false)
       ..sort((keyA, keyB) => nations[keyB]!.compareTo(nations[keyA]!.toInt()));
-    Map<String, int?> sortedNations = { for (var key in sortedKeys) key: nations[key]};
+    Map<String, int> sortedNations = { for (var key in sortedKeys) key: nations[key]!};
 
     return sortedNations;
   }
