@@ -1,11 +1,18 @@
+import 'package:f1_application/lib/service/grid/grid_service.dart';
 import 'package:f1_application/util/build_blur.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class Summary extends StatelessWidget {
-  final Widget childWidget;
+import 'nation.dart';
 
-  const Summary(this.childWidget, {Key? key}) : super(key: key);
+class Summary extends StatefulWidget {
+  const Summary({Key? key}) : super(key: key);
 
+  @override
+  State<Summary> createState() => _SummaryState();
+}
+
+class _SummaryState extends State<Summary> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -50,12 +57,34 @@ class Summary extends StatelessWidget {
                       ]
                   ),
                 ),
-                childWidget
+                _nations()
               ],
             ),
           ),
         ),
       ],
     );
+  }
+
+  Widget _nations() {
+    final gridService = Provider.of<GridService>(context);
+
+    if (gridService.isGridFetching) {
+      return Container();
+    }
+
+    List<Widget> nationList = [];
+
+    gridService.nationsSummary().forEach((key, value) {
+      nationList.add(Nation(key, value));
+    });
+
+    return
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: nationList,
+      );
   }
 }

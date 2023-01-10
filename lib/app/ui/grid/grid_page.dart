@@ -75,28 +75,6 @@ class _GridScreenState extends State<GridScreen> {
     );
   }
 
-  Widget _nations() {
-    final gridService = Provider.of<GridService>(context);
-
-    if (gridService.isGridFetching) {
-      return Container();
-    }
-
-    List<Widget> nationList = [];
-
-    gridService.nationsSummary().forEach((key, value) {
-      nationList.add(Nation(key, value));
-    });
-
-    return
-      Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: nationList,
-      );
-  }
-
   Widget _summary() {
     final gridService = Provider.of<GridService>(context);
 
@@ -108,7 +86,7 @@ class _GridScreenState extends State<GridScreen> {
       return Container();
     }
 
-    return Summary(_nations());
+    return const Summary();
   }
 
   Widget _drivers() {
