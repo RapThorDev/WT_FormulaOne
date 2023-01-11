@@ -73,11 +73,7 @@ class _SummaryState extends State<Summary> {
       return Container();
     }
 
-    List<Widget> nationList = [];
-
-    gridService.nationsSummary().forEach((key, value) {
-      nationList.add(Nation(key, value));
-    });
+    List<Widget> nationList = gridService.nationsSummary().entries.map<Widget>((entry) => Nation(entry.key, entry.value)).toList();
 
     return
       Column(
