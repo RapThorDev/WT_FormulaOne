@@ -71,8 +71,6 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
       );
     }
 
-    seasonViewModel.orderSeasonsDescByYear();
-
     List<Widget> seasonCards = seasonViewModel.seasons.map((season) => SeasonCard(season: season)).toList();
 
     return Column(

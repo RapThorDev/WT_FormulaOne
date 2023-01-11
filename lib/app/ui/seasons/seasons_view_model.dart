@@ -18,6 +18,7 @@ class SeasonViewModel with ChangeNotifier {
     _seasonsFetching = true;
     notifyListeners();
     _seasons = await _service.fetchSeasons();
+    orderSeasonsDescByYear();
     _seasonsFetching = false;
     notifyListeners();
   }
