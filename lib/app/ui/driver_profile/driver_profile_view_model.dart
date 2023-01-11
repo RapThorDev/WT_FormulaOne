@@ -1,19 +1,22 @@
-import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/lib/service/driver_profile/driver_profile_service.dart';
-import 'package:f1_application/lib/service/grid/grid_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
-class DriverProfileViewModel {
-  DriverProfileViewModel(this._context);
+class DriverProfileViewModel with ChangeNotifier {
+  DriverProfileViewModel();
 
-  final BuildContext _context;
+  final DriverProfileService _service = DriverProfileService();
 
-  bool get isDriverProfileFetching => Provider.of<DriverProfileService>(_context, listen: false).isGoogleImageFetching;
+  String? _googleImageUrl;
+  String? get imageUrl => _googleImageUrl;
 
-  String get imageUrl => Provider.of<DriverProfileService>(_context, listen: false).googleImageUrl ?? "";
+  bool _googleImageFetching = false;
+  bool get isDriverProfileFetching => _googleImageFetching;
 
-  Driver? get driver => Provider.of<GridService>(_context, listen: false).selectedDriver;
-
-
+  Future<void> fetchDriverProfileImage(String driverLastName) async {
+    _googleImageFetching = true;
+    notifyListeners();
+    _googleImageUrl = await _service.fetchDriverProfileImage(driverLastName);
+    _googleImageFetching = false;
+    notifyListeners();
+  }
 }

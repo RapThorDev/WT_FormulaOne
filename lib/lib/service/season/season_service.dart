@@ -1,33 +1,14 @@
 import 'package:f1_application/lib/datamanagement/repository/season_repository.dart';
 import 'package:f1_application/lib/model/season.dart';
-import 'package:flutter/cupertino.dart';
 
-class SeasonService with ChangeNotifier {
+class SeasonService {
   SeasonService();
 
-  List<Season>? _seasons;
-  List<Season> get getSeasonList => _seasons ?? [];
+  final SeasonRepository seasonRepository = SeasonRepository();
 
-  bool _seasonsFetching = false;
-  bool get isSeasonsFetching => _seasonsFetching;
-
-  Season? _selectedSeason;
-  Season? get getSelectedSeason => _selectedSeason;
-
-  void setSelectedSeason(Season season) {
-    _selectedSeason = season;
-    notifyListeners();
+  Future<List<Season>> fetchSeasons() async {
+    return await seasonRepository.fetchSeasons();
   }
 
-  Future<void> fetchSeasons() async {
-    final seasonRepository = SeasonRepository();
-
-    _seasonsFetching = true;
-    notifyListeners();
-    _seasons = await seasonRepository.fetchSeasons();
-    _seasonsFetching = false;
-    notifyListeners();
-  }
-
-  void sortSeasonListDescByYear() => _seasons?.sort((a, b) => Comparable.compare(b.year, a.year));
+  void sortSeasonListDescByYear(List<Season> seasons) => seasons.sort((a, b) => Comparable.compare(b.year, a.year));
 }

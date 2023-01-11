@@ -4,7 +4,7 @@ import 'package:f1_application/lib/network/api/google_search_api_client.dart';
 class DriverProfileRepository {
   DriverProfileRepository();
 
-  GoogleSearchApiClient clientGoogleSearch = GoogleSearchApiClient();
+  final GoogleSearchApiClient clientGoogleSearch = GoogleSearchApiClient();
 
   Future<String> fetchGoogleImageUrl(String driverLastName) async {
     String url = "";

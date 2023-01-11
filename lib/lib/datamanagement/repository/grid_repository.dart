@@ -5,7 +5,7 @@ import 'package:f1_application/lib/network/api/ergast_api_client.dart';
 class GridRepository {
   GridRepository();
 
-  ErgastApiClient clientErgast = ErgastApiClient();
+  final ErgastApiClient clientErgast = ErgastApiClient();
 
   Future<List<Driver>> fetchGrid(int  seasonYear) async {
     List<Driver> drivers = [];

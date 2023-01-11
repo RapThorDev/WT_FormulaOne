@@ -4,12 +4,8 @@ import 'package:f1_application/app/component/background/background_bottom.dart';
 import 'package:f1_application/app/component/background/background_top.dart';
 import 'package:f1_application/app/component/loading/full_page_loading.dart';
 import 'package:f1_application/generated/assets.dart';
-import 'package:f1_application/lib/datamanagement/repository/driver_profile_repository.dart';
-import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
 import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/app/ui/driver_profile/component/driver_code.dart';
-import 'package:f1_application/lib/service/driver_profile/driver_profile_service.dart';
-import 'package:f1_application/lib/service/grid/grid_service.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +14,9 @@ import 'package:f1_application/util/countries.dart' as country;
 import 'driver_profile_view_model.dart';
 
 class DriverProfileScreen extends StatefulWidget {
-  const DriverProfileScreen({Key? key}) : super(key: key);
+  const DriverProfileScreen({Key? key, this.driver}) : super(key: key);
+
+  final Driver? driver;
 
   @override
   State<DriverProfileScreen> createState() => _DriverProfileScreenState();
@@ -30,10 +28,8 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   @override
   void initState() {
     super.initState();
-    Driver? selectedDriver = Provider.of<GridService>(context, listen: false).selectedDriver;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // TODO: Bloc használata esetén a Provider package már felesleges
-      Provider.of<DriverProfileService>(context, listen: false).fetchDriverProfileImage(selectedDriver!.lastName);
+      Provider.of<DriverProfileViewModel>(context, listen: false).fetchDriverProfileImage(widget.driver!.lastName);
     });
   }
 
@@ -99,17 +95,16 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   }
 
   Widget _driverProfileImage() {
-    final driverProfileService = Provider.of<DriverProfileService>(context);
-    final driverProfileViewModel = DriverProfileViewModel(context);
+    final driverProfileViewModel = Provider.of<DriverProfileViewModel>(context);
 
-    if (driverProfileService.isGoogleImageFetching) {
+    if (driverProfileViewModel.isDriverProfileFetching) {
       return const FullPageLoading();
     }
 
     String? imageUrl = driverProfileViewModel.imageUrl;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    if (imageUrl.isEmpty) {
+    if (imageUrl == null || imageUrl.isEmpty) {
       return Image.asset(
         Assets.imagesDefault,
         width: screenWidth * 0.9,
@@ -125,15 +120,9 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   }
 
   Widget _driverProfile() {
-    Driver? driver = DriverProfileViewModel(context).driver;
-
     Size screenSize = MediaQuery.of(context).size;
 
     TextStyle textStyle = TextStyle(fontFamily: "Formula1");
-    
-    if (driver == null) {
-      return const Center(child: Text("Not selected any driver"),);
-    }
 
     return Align(
         alignment: Alignment.center,
@@ -153,11 +142,11 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      _driverName(driver.firstName,
-                          driver.lastName),
+                      _driverName(widget.driver!.firstName,
+                          widget.driver!.lastName),
                       Flag.fromCode(
                         country.Countries.getByNationality(
-                            driver.nationality)["flagsCode"],
+                            widget.driver!.nationality)["flagsCode"],
                         width: flagWidth,
                         height: 50,
                       )
@@ -176,8 +165,8 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      driver.code.isNotEmpty
-                          ? DriverCode(driverCode: driver.code)
+                      widget.driver!.code.isNotEmpty
+                          ? DriverCode(driverCode: widget.driver!.code)
                           : Container(),
                       Column(
                         mainAxisSize: MainAxisSize.max,
@@ -185,18 +174,18 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            driver.dateOfBirth,
+                            widget.driver!.dateOfBirth,
                             style: textStyle.copyWith(fontSize: 24),
                           ),
                           Text(
-                            "(age ${AgeCalculator.age(DateTime.parse(driver.dateOfBirth)).years})",
+                            "(age ${AgeCalculator.age(DateTime.parse(widget.driver!.dateOfBirth)).years})",
                             style: textStyle.copyWith(fontSize: 18),
                           ),
                         ],
                       ),
-                      driver.permanentNumber.isNotEmpty
+                      widget.driver!.permanentNumber.isNotEmpty
                           ? Text(
-                        driver.permanentNumber,
+                        widget.driver!.permanentNumber,
                         style: textStyle.copyWith(fontSize: 24),
                       )
                           : Container(),

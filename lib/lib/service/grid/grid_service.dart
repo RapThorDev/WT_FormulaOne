@@ -1,44 +1,25 @@
 import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
 import 'package:f1_application/lib/model/driver.dart';
-import 'package:flutter/cupertino.dart';
 
-class GridService with ChangeNotifier {
+class GridService {
   GridService();
 
-  bool _gridFetching = false;
-  bool get isGridFetching => _gridFetching;
+  final GridRepository gridRepository = GridRepository();
 
-  List<Driver>? _drivers;
-  List<Driver> get drivers => _drivers ?? [];
-
-  Driver? _selectedDriver;
-  Driver? get selectedDriver => _selectedDriver;
-
-  Future<void> fetchGrid(int seasonYear) async {
-    final gridRepository = GridRepository();
-
-    _gridFetching = true;
-    notifyListeners();
-    _drivers = await gridRepository.fetchGrid(seasonYear);
-    _gridFetching = false;
-    notifyListeners();
+  Future<List<Driver>> fetchGrid(int seasonYear) async {
+    return await gridRepository.fetchGrid(seasonYear);
   }
 
-  List<Driver> relevantDriversByExpression(String expression) => drivers.where((driver) => _isRelevantDriver(driver, expression)).toList();
+  List<Driver> relevantDriversByExpression(List<Driver> drivers, String expression) => drivers.where((driver) => _isRelevantDriver(driver, expression)).toList();
 
-  Map<String, int> nationsSummary() {
-    Map<String, int> nations = _driversNationsGroup();
+  Map<String, int> nationsSummary(List<Driver> drivers) {
+    Map<String, int> nations = _driversNationsGroup(drivers);
 
     List<String> sortedKeys = nations.keys.toList(growable: false)
       ..sort((keyA, keyB) => nations[keyB]!.compareTo(nations[keyA]!.toInt()));
     Map<String, int> sortedNations = { for (var key in sortedKeys) key: nations[key]!};
 
     return sortedNations;
-  }
-
-  void setSelectedDriver(Driver driver) {
-    _selectedDriver = driver;
-    notifyListeners();
   }
 
   bool _isRelevantDriver(Driver driver, String expression) {
@@ -51,7 +32,7 @@ class GridService with ChangeNotifier {
     return searchableParams.any((String param) => param.contains(expression.toLowerCase()));
   }
 
-  Map<String, int> _driversNationsGroup() {
+  Map<String, int> _driversNationsGroup(List<Driver> drivers) {
     Map<String, int> nationsSummary = {};
     for (Driver driver in drivers) {
       if (!nationsSummary.containsKey(driver.nationality)) {

@@ -5,7 +5,7 @@ import 'package:f1_application/lib/network/api/ergast_api_client.dart';
 class SeasonRepository {
   SeasonRepository();
 
-  ErgastApiClient clientErgast = ErgastApiClient();
+  final ErgastApiClient clientErgast = ErgastApiClient();
 
   Future<List<Season>> fetchSeasons() async {
     List<Season> seasons = [];

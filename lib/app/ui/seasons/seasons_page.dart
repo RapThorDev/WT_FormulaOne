@@ -2,7 +2,6 @@ import 'package:f1_application/app/component/background/background_bottom.dart';
 import 'package:f1_application/app/component/background/background_top.dart';
 import 'package:f1_application/app/component/card/season_card.dart';
 import 'package:f1_application/app/ui/seasons/seasons_view_model.dart';
-import 'package:f1_application/lib/service/season/season_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +21,7 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<SeasonService>(context, listen: false).fetchSeasons();
+      Provider.of<SeasonViewModel>(context, listen: false).fetchSeasons();
     });
   }
 
@@ -60,10 +59,9 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
   }
 
   Widget _seasonCardsColumn() {
-    final seasonService = Provider.of<SeasonService>(context);
-    final seasonViewModel = SeasonViewModel(context);
+    final seasonViewModel = Provider.of<SeasonViewModel>(context);
 
-    if (seasonService.isSeasonsFetching) {
+    if (seasonViewModel.isSeasonsFetching) {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,

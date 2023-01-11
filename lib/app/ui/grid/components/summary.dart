@@ -1,4 +1,4 @@
-import 'package:f1_application/lib/service/grid/grid_service.dart';
+import 'package:f1_application/app/ui/grid/grid_view_model.dart';
 import 'package:f1_application/util/build_blur.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -67,13 +67,13 @@ class _SummaryState extends State<Summary> {
   }
 
   Widget _nations() {
-    final gridService = Provider.of<GridService>(context);
+    final gridViewModel = Provider.of<GridViewModel>(context);
 
-    if (gridService.isGridFetching) {
+    if (gridViewModel.isGridFetching) {
       return Container();
     }
 
-    List<Widget> nationList = gridService.nationsSummary().entries.map<Widget>((entry) => Nation(entry.key, entry.value)).toList();
+    List<Widget> nationList = gridViewModel.nationsSummary().entries.map<Widget>((entry) => Nation(entry.key, entry.value)).toList();
 
     return
       Column(

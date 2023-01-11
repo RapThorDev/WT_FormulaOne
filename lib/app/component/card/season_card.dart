@@ -1,9 +1,7 @@
 import 'package:f1_application/generated/assets.dart';
 import 'package:f1_application/lib/model/season.dart';
 import 'package:f1_application/app/ui/grid/grid_page.dart';
-import 'package:f1_application/lib/service/season/season_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'dart:math' as math;
 import 'package:f1_application/util/intent_action.dart';
 
@@ -75,8 +73,7 @@ class SeasonCard extends StatelessWidget {
           children: <Widget>[
             GestureDetector(
               onTap: () {
-                Provider.of<SeasonService>(context, listen: false).setSelectedSeason(season);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const GridScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => GridScreen(season: season)));
               },
               child: SizedBox(
                 width: width * 0.8,

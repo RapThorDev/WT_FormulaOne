@@ -2,19 +2,18 @@ import 'package:f1_application/app/component/background/background_bottom.dart';
 import 'package:f1_application/app/component/background/background_top.dart';
 import 'package:f1_application/app/component/card/driver_card.dart';
 import 'package:f1_application/app/component/loading/full_page_loading.dart';
-import 'package:f1_application/app/ui/grid/components/nation.dart';
 import 'package:f1_application/app/ui/grid/components/summary.dart';
 import 'package:f1_application/app/ui/grid/grid_view_model.dart';
 import 'package:f1_application/lib/model/driver.dart';
 import 'package:f1_application/lib/model/season.dart';
-import 'package:f1_application/lib/service/grid/grid_service.dart';
-import 'package:f1_application/lib/service/season/season_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 
 class GridScreen extends StatefulWidget {
-  const GridScreen({super.key});
+  const GridScreen({super.key, this.season});
+
+  final Season? season;
 
   @override
   State<GridScreen> createState() => _GridScreenState();
@@ -27,12 +26,9 @@ class _GridScreenState extends State<GridScreen> {
   @override
   void initState() {
     super.initState();
-    Season? season = Provider.of<SeasonService>(context, listen: false).getSelectedSeason;
-    if (season != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Provider.of<GridService>(context, listen: false).fetchGrid(int.parse(season.year));
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<GridViewModel>(context, listen: false).fetchGrid(int.parse(widget.season!.year));
+    });
   }
 
   @override
@@ -44,8 +40,6 @@ class _GridScreenState extends State<GridScreen> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-
-    Season? selectedSeason = GridViewModel(context).selectedSeason;
 
     return Material(
       child: Stack(
@@ -69,19 +63,19 @@ class _GridScreenState extends State<GridScreen> {
               ),
             ),
           ),
-          BackgroundTop(title: "${selectedSeason?.shortYear} Grid"),
+          BackgroundTop(title: "${widget.season!.shortYear} Grid"),
         ],
       ),
     );
   }
 
   Widget _summary() {
-    final gridService = Provider.of<GridService>(context);
+    final gridViewModel = Provider.of<GridViewModel>(context);
 
     if (
-    gridService.isGridFetching
+    gridViewModel.isGridFetching
     || searchTextString.isNotEmpty
-    || gridService.drivers.isEmpty
+    || gridViewModel.drivers.isEmpty
     ) {
       return Container();
     }
@@ -90,10 +84,9 @@ class _GridScreenState extends State<GridScreen> {
   }
 
   Widget _drivers() {
-    final gridService = Provider.of<GridService>(context);
-    final gridViewModel = GridViewModel(context);
+    final gridViewModel = Provider.of<GridViewModel>(context);
 
-    if (gridService.isGridFetching) {
+    if (gridViewModel.isGridFetching) {
       return const FullPageLoading();
     }
 

@@ -1,9 +1,9 @@
 import 'package:f1_application/app/ui/driver_profile/driver_profile_page.dart';
+import 'package:f1_application/app/ui/driver_profile/driver_profile_view_model.dart';
 import 'package:f1_application/app/ui/grid/grid_page.dart';
+import 'package:f1_application/app/ui/grid/grid_view_model.dart';
 import 'package:f1_application/app/ui/seasons/seasons_page.dart';
-import 'package:f1_application/lib/service/driver_profile/driver_profile_service.dart';
-import 'package:f1_application/lib/service/grid/grid_service.dart';
-import 'package:f1_application/lib/service/season/season_service.dart';
+import 'package:f1_application/app/ui/seasons/seasons_view_model.dart';
 import 'package:f1_application/screen_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,21 +11,21 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  SeasonService seasonService = SeasonService();
-  GridService gridService = GridService();
-  DriverProfileService driverProfileService = DriverProfileService();
+  SeasonViewModel seasonViewModel = SeasonViewModel();
+  GridViewModel gridViewModel = GridViewModel();
+  DriverProfileViewModel driverProfileViewModel = DriverProfileViewModel();
 
-  return runApp(MyApp(seasonService, gridService, driverProfileService));
+  return runApp(MyApp(seasonViewModel, gridViewModel, driverProfileViewModel));
 }
 
 class MyApp extends StatefulWidget {
 
 
-  final SeasonService seasonService;
-  final GridService gridService;
-  final DriverProfileService driverProfileService;
+  final SeasonViewModel seasonViewModel;
+  final GridViewModel gridViewModel;
+  final DriverProfileViewModel driverProfileViewModel;
 
-  const MyApp(this.seasonService, this.gridService, this.driverProfileService, {super.key});
+  const MyApp(this.seasonViewModel, this.gridViewModel, this.driverProfileViewModel, {super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -36,9 +36,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => widget.seasonService),
-        ChangeNotifierProvider(create: (context) => widget.gridService),
-        ChangeNotifierProvider(create: (context) => widget.driverProfileService),
+        ChangeNotifierProvider(create: (context) => widget.seasonViewModel),
+        ChangeNotifierProvider(create: (context) => widget.gridViewModel),
+        ChangeNotifierProvider(create: (context) => widget.driverProfileViewModel),
       ],
       child: Container(
         constraints: const BoxConstraints(maxWidth: 600),

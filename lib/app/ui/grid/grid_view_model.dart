@@ -1,20 +1,32 @@
 import 'package:f1_application/lib/model/driver.dart';
-import 'package:f1_application/lib/model/season.dart';
 import 'package:f1_application/lib/service/grid/grid_service.dart';
-import 'package:f1_application/lib/service/season/season_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
-class GridViewModel {
-  GridViewModel(this.context);
+class GridViewModel with ChangeNotifier {
+  GridViewModel();
 
-  final BuildContext context;
+  final GridService _service = GridService();
 
-  Season? get selectedSeason => Provider.of<SeasonService>(context, listen: false).getSelectedSeason;
+  bool _gridFetching = false;
+  bool get isGridFetching => _gridFetching;
 
-  List<Driver> get drivers => Provider.of<GridService>(context, listen: false).drivers;
+  List<Driver>? _drivers;
+  List<Driver> get drivers => _drivers ?? [];
+
+  Future<void> fetchGrid(int seasonYear) async {
+
+    _gridFetching = true;
+    notifyListeners();
+    _drivers = await _service.fetchGrid(seasonYear);
+    _gridFetching = false;
+    notifyListeners();
+  }
 
   List<Driver> relevantDriversByExpression(String expression) {
-    return Provider.of<GridService>(context).relevantDriversByExpression(expression);
+    return _service.relevantDriversByExpression(drivers, expression);
+  }
+
+  Map<String, int> nationsSummary() {
+    return _service.nationsSummary(drivers);
   }
 }
