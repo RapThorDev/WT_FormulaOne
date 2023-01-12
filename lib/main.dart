@@ -1,28 +1,31 @@
-import 'package:f1_application/provider/formula_one_provider.dart';
-import 'package:f1_application/screen/DriverProfileScreen.dart';
-import 'package:f1_application/screen/GridScreen.dart';
-import 'package:f1_application/screen/SeasonsScreen.dart';
+import 'package:f1_application/app/ui/driver_profile/driver_profile_page.dart';
+import 'package:f1_application/app/ui/driver_profile/driver_profile_view_model.dart';
+import 'package:f1_application/app/ui/grid/grid_page.dart';
+import 'package:f1_application/app/ui/grid/grid_view_model.dart';
+import 'package:f1_application/app/ui/seasons/seasons_page.dart';
+import 'package:f1_application/app/ui/seasons/seasons_view_model.dart';
+import 'package:f1_application/screen_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'screen_routes.dart';
 
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  final preferences = await SharedPreferences.getInstance();
-  FormulaOneProvider formulaOneProvider = FormulaOneProvider(preferences);
+  SeasonViewModel seasonViewModel = SeasonViewModel();
+  GridViewModel gridViewModel = GridViewModel();
+  DriverProfileViewModel driverProfileViewModel = DriverProfileViewModel();
 
-  return runApp(MyApp(preferences, formulaOneProvider));
+  return runApp(MyApp(seasonViewModel, gridViewModel, driverProfileViewModel));
 }
 
 class MyApp extends StatefulWidget {
 
-  final SharedPreferences preferences;
-  final FormulaOneProvider formulaOneProvider;
 
-  const MyApp(this.preferences, this.formulaOneProvider, {super.key});
+  final SeasonViewModel seasonViewModel;
+  final GridViewModel gridViewModel;
+  final DriverProfileViewModel driverProfileViewModel;
+
+  const MyApp(this.seasonViewModel, this.gridViewModel, this.driverProfileViewModel, {super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -33,7 +36,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => widget.formulaOneProvider)
+        ChangeNotifierProvider(create: (context) => widget.seasonViewModel),
+        ChangeNotifierProvider(create: (context) => widget.gridViewModel),
+        ChangeNotifierProvider(create: (context) => widget.driverProfileViewModel),
       ],
       child: Container(
         constraints: const BoxConstraints(maxWidth: 600),

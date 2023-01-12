@@ -1,17 +1,15 @@
 import 'package:f1_application/generated/assets.dart';
-import 'package:f1_application/model/season.dart';
-import 'package:f1_application/provider/formula_one_provider.dart';
-import 'package:f1_application/screen/GridScreen.dart';
-import 'package:f1_application/tools/openURL.dart';
+import 'package:f1_application/lib/model/season.dart';
+import 'package:f1_application/app/ui/grid/grid_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'dart:math' as math;
+import 'package:f1_application/util/intent_action.dart';
 
 
 class SeasonCard extends StatelessWidget {
   const SeasonCard({Key? key, required this.season}) : super(key: key);
 
-  final SeasonModel season;
+  final Season season;
 
   String getImagePath(String yearString) {
     int year = int.parse(yearString);
@@ -75,8 +73,7 @@ class SeasonCard extends StatelessWidget {
           children: <Widget>[
             GestureDetector(
               onTap: () {
-                Provider.of<FormulaOneProvider>(context, listen: false).setSelectedSeason(season);
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const GridScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => GridScreen(season: season)));
               },
               child: SizedBox(
                 width: width * 0.8,
@@ -104,7 +101,7 @@ class SeasonCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
                             Text(
-                              width > 500 ? season.year : season.getShortYear,
+                              width > 500 ? season.year : season.shortYear,
                               textAlign: TextAlign.right,
                               style: fontStyle.copyWith(fontSize: 102, height: 0.3),
                             ),
@@ -122,7 +119,7 @@ class SeasonCard extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () async {
-                openUrl(season.wikiURL);
+                IntentAction.openUrl(season.wikiURL);
               },
               child: Container(
                   width: width * 0.1,

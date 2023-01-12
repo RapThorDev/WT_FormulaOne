@@ -1,15 +1,11 @@
 
-import 'dart:ui';
-
-import 'package:f1_application/model/driver.dart';
-import 'package:f1_application/provider/formula_one_provider.dart';
-import 'package:f1_application/screen/DriverProfileScreen.dart';
-import 'package:f1_application/tools/BuildBlur.dart';
-import 'package:f1_application/tools/openURL.dart';
+import 'package:f1_application/lib/model/driver.dart';
+import 'package:f1_application/app/ui/driver_profile/driver_profile_page.dart';
+import 'package:f1_application/util/build_blur.dart';
+import 'package:f1_application/util/intent_action.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
-import 'package:f1_application/countries.dart' as country;
-import 'package:provider/provider.dart';
+import 'package:f1_application/util/countries.dart' as country;
 
 class DriverCard extends StatelessWidget {
   const DriverCard({
@@ -17,7 +13,7 @@ class DriverCard extends StatelessWidget {
     required this.driver
   });
 
-  final DriverModel driver;
+  final Driver driver;
 
 
   @override
@@ -39,8 +35,7 @@ class DriverCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Provider.of<FormulaOneProvider>(context, listen: false).setSelectedDriver(driver);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const DriverProfileScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => DriverProfileScreen(driver: driver)));
       },
       child: Container(
           width: cardWidth,
@@ -94,7 +89,7 @@ class DriverCard extends StatelessWidget {
                     right: cardWidth * 0.1,
                     child: GestureDetector(
                       onTap: () async {
-                        openUrl(driver.wikiURL);
+                        IntentAction.openUrl(driver.wikiURL);
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 5),
