@@ -24,13 +24,25 @@ class DriverProfileScreen extends StatefulWidget {
 
 class _DriverProfileScreenState extends State<DriverProfileScreen> {
   double flagWidth = 65;
+  DriverProfileViewModel? _viewModel;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<DriverProfileViewModel>(context, listen: false).fetchDriverProfileImage(widget.driver!.lastName);
+      _viewModel = Provider.of<DriverProfileViewModel>(context, listen: false);
+      _viewModel!.fetchDriverProfileImage(widget.driver!.lastName);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_viewModel == null) {
+      setState(() {
+        _viewModel = Provider.of<DriverProfileViewModel>(context);
+      });
+    }
   }
 
   @override
@@ -95,13 +107,11 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   }
 
   Widget _driverProfileImage() {
-    final driverProfileViewModel = Provider.of<DriverProfileViewModel>(context);
-
-    if (driverProfileViewModel.isDriverProfileFetching) {
+    if (_viewModel!.isDriverProfileFetching) {
       return const FullPageLoading();
     }
 
-    String? imageUrl = driverProfileViewModel.imageUrl;
+    String? imageUrl = _viewModel!.imageUrl;
     double screenWidth = MediaQuery.of(context).size.width;
 
     if (imageUrl == null || imageUrl.isEmpty) {
