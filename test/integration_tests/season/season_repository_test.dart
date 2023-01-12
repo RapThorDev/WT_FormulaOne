@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final SeasonRepository repository = SeasonRepository();
 
-  group("Grid Repository tests", () {
+  group("Season Repository tests", () {
     test("Get filled list", () async {
       final response = await repository.fetchSeasons();
       expect(response.isNotEmpty, true);
