@@ -16,13 +16,25 @@ class SeasonsScreen extends StatefulWidget {
 
 class _SeasonsScreenState extends State<SeasonsScreen> {
   late Size _screenSize;
+  SeasonViewModel? _viewModel;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<SeasonViewModel>(context, listen: false).fetchSeasons();
+      _viewModel = Provider.of<SeasonViewModel>(context, listen: false);
+      _viewModel!.fetchSeasons();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_viewModel == null) {
+      setState(() {
+        _viewModel = Provider.of<SeasonViewModel>(context);
+      });
+    }
   }
 
   @override
@@ -59,9 +71,7 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
   }
 
   Widget _seasonCardsColumn() {
-    final seasonViewModel = Provider.of<SeasonViewModel>(context);
-
-    if (seasonViewModel.isSeasonsFetching) {
+    if (_viewModel!.isSeasonsFetching) {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -71,7 +81,7 @@ class _SeasonsScreenState extends State<SeasonsScreen> {
       );
     }
 
-    List<Widget> seasonCards = seasonViewModel.seasons.map((season) => SeasonCard(season: season)).toList();
+    List<Widget> seasonCards = _viewModel!.seasons.map((season) => SeasonCard(season: season)).toList();
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
