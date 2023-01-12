@@ -35,7 +35,6 @@ class _GridScreenState extends State<GridScreen> {
   
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     if (_viewModel == null) {
       setState(() {
