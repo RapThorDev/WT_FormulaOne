@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final GridRepository repository = GridRepository();
 
-  group("Grid successful tests", () {
+  group("Grid Repository tests", () {
     test("Get filled list with year 2000", () async {
       final response = await repository.fetchGrid(2000);
       expect(response.isNotEmpty, true);
