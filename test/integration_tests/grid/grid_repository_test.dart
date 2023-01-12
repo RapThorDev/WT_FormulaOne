@@ -1,10 +1,7 @@
 import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-
   final GridRepository repository = GridRepository();
 
   group("Grid successful tests", () {
