@@ -22,7 +22,7 @@ class GridViewModel with ChangeNotifier {
 
     _gridFetching = true;
     notifyListeners();
-    final response = await _service.fetchGrid(0);
+    final response = await _service.fetchGrid(seasonYear);
     if (response["data"] is List<Driver>) {
       _drivers = response["data"];
     } else {
