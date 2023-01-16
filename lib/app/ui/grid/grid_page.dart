@@ -98,7 +98,7 @@ class _GridScreenState extends State<GridScreen> {
       return const FullPageLoading();
     }
 
-    if (_viewModel!.errorReason != null) {
+    if (_viewModel!.errorData.isNotEmpty) {
       return SizedBox(
         child: Text(
           "Error: ${_viewModel!.errorReason}"
