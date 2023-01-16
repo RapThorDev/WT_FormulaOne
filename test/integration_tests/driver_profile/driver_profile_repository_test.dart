@@ -9,5 +9,10 @@ void main() {
       final response = await repository.fetchGoogleImageUrl("Schumacher");
       expect(response.isNotEmpty, true);
     });
+
+    test("Call fetch function with empty String", () async {
+      final response = await repository.fetchGoogleImageUrl("");
+      expect(response, "");
+    });
   });
 }
