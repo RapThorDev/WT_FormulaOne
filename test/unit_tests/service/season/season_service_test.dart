@@ -18,7 +18,7 @@ void main() {
       service.sortSeasonListDescByYear(seasons);
 
       test("After short the first season is 1995", () {
-        expect(seasons.first.year == "1995", true);
+        expect(seasons.first.year, "1995");
       });
     });
   });
