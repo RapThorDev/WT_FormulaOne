@@ -6,7 +6,7 @@ class GridService {
 
   final GridRepository gridRepository = GridRepository();
 
-  Future<List<Driver>> fetchGrid(int seasonYear) async {
+  Future<Map<String, dynamic>> fetchGrid(int seasonYear) async {
     return await gridRepository.fetchGrid(seasonYear);
   }
 

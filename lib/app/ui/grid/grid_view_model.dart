@@ -13,11 +13,21 @@ class GridViewModel with ChangeNotifier {
   List<Driver>? _drivers;
   List<Driver> get drivers => _drivers ?? [];
 
+  Map<String, dynamic>? _errorData;
+  Map<String, dynamic> get errorData => _errorData ?? {};
+
+  String? get errorReason => _errorData?["reason"] ?? "NO ERROR REASON";
+
   Future<void> fetchGrid(int seasonYear) async {
 
     _gridFetching = true;
     notifyListeners();
-    _drivers = await _service.fetchGrid(seasonYear);
+    final response = await _service.fetchGrid(0);
+    if (response["data"] is List<Driver>) {
+      _drivers = response["data"];
+    } else {
+      _errorData = response["data"];
+    }
     _gridFetching = false;
     notifyListeners();
   }

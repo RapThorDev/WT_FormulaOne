@@ -7,13 +7,19 @@ class GridRepository {
 
   final ErgastApiClient clientErgast = ErgastApiClient();
 
-  Future<List<Driver>> fetchGrid(int  seasonYear) async {
-    List<Driver> drivers = [];
-    final response = await clientErgast.get(type: GetType.grid, year: seasonYear);
-    if (response.statusCode == 200) {
-      Map<String, dynamic> jsonObject = jsonDecode(response.body);
-      drivers = Driver.listFromJson(jsonObject["MRData"]["DriverTable"]["Drivers"]);
+  Future<Map<String, dynamic>> fetchGrid(int  seasonYear) async {
+    try {
+      final response = await clientErgast.get(type: GetType.grid, year: seasonYear);
+      switch (response.statusCode) {
+        case 200:
+          Map<String, dynamic> jsonObject = jsonDecode(response.body);
+          List<Driver> drivers = Driver.listFromJson(jsonObject["MRData"]["DriverTable"]["Drivers"]);
+          return {"data": drivers};
+        default:
+          return {"data": {"code": response.statusCode, "reason": response.reasonPhrase}};
+      }
+    } catch (e) {
+      return {"data": e};
     }
-    return drivers;
   }
 }
