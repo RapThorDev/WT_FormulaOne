@@ -8,13 +8,14 @@ class GridViewModel with ChangeNotifier {
   final GridService _service = GridService();
 
   bool _gridFetching = false;
+
   bool get isGridFetching => _gridFetching;
 
   List<Driver>? _drivers;
+
   List<Driver> get drivers => _drivers ?? [];
 
   Future<void> fetchGrid(int seasonYear) async {
-
     _gridFetching = true;
     notifyListeners();
     _drivers = await _service.fetchGrid(seasonYear);
@@ -29,3 +30,4 @@ class GridViewModel with ChangeNotifier {
   Map<String, int> nationsSummary() {
     return _service.nationsSummary(drivers);
   }
+}
