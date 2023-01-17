@@ -98,14 +98,6 @@ class _GridScreenState extends State<GridScreen> {
       return const FullPageLoading();
     }
 
-    if (_viewModel!.errorData.isNotEmpty) {
-      return SizedBox(
-        child: Text(
-          "Error: ${_viewModel!.errorReason}"
-        ),
-      );
-    }
-
     if (_viewModel!.drivers.isEmpty) {
       return const SizedBox(
         child: Text(
