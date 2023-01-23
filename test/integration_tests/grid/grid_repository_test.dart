@@ -1,4 +1,5 @@
 import 'package:f1_application/lib/datamanagement/repository/grid_repository.dart';
+import 'package:f1_application/lib/network/response/error_response.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -16,8 +17,7 @@ void main() {
     });
 
     test("Get empty list with year 0", () async {
-      final response = await repository.fetchGrid(0);
-      expect(response.isEmpty, true);
+      expect(() => repository.fetchGrid(0), throwsA(isA<ErrorResponse>()));
     });
 
     test("Get empty list with year -200", () async {
