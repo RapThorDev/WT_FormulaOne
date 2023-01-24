@@ -1,11 +1,11 @@
 class ErrorResponse implements Exception {
-  ErrorResponse({this.statusCode = -1, required this.reasonPhrase});
+  ErrorResponse({this.statusCode, required this.reasonPhrase});
 
-  final int statusCode;
+  final int? statusCode;
   final String reasonPhrase;
 
   @override
   String toString() {
-    return statusCode != -1 ? "[$statusCode] $reasonPhrase" : reasonPhrase;
+    return statusCode != null ? "[$statusCode] $reasonPhrase" : reasonPhrase;
   }
 }
