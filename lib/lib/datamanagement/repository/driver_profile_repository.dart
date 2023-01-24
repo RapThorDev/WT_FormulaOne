@@ -12,15 +12,10 @@ class DriverProfileRepository {
   Future<String> fetchGoogleImageUrl(String driverLastName) async {
     try {
       final response = await clientGoogleSearch.get(queryString: driverLastName);
-      switch (response.statusCode) {
-        case 200:
-          Map<String, dynamic> jsonObject = jsonDecode(response.body);
-          return jsonObject["items"][0]["pagemap"]["cse_image"][0]["src"] ?? "";
-        default:
-          throw _errorHandler.getErrorResponse(response);
-      }
+      Map<String, dynamic> jsonObject = jsonDecode(response.body);
+      return jsonObject["items"][0]["pagemap"]["cse_image"][0]["src"] ?? "";
     } catch (e) {
-      rethrow;
+      throw _errorHandler.handle(e);
     }
   }
 }

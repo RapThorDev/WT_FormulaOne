@@ -1,4 +1,5 @@
 import 'package:f1_application/lib/datamanagement/repository/driver_profile_repository.dart';
+import 'package:f1_application/lib/network/response/error_response.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -11,8 +12,7 @@ void main() {
     });
 
     test("Call fetch function with empty String", () async {
-      final response = await repository.fetchGoogleImageUrl("");
-      expect(response, "");
+      expect(() => repository.fetchGoogleImageUrl(""), throwsA(isA<ErrorResponse>()));
     });
   });
 }

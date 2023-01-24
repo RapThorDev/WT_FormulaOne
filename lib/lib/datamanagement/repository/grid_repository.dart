@@ -13,16 +13,11 @@ class GridRepository {
 
   Future<List<Driver>> fetchGrid(int  seasonYear) async {
     try {
-      Response response = await clientErgast.get(type: GetType.grid, year: seasonYear);
-      switch (response.statusCode) {
-        case 200:
-          Map<String, dynamic> jsonObject = jsonDecode(response.body);
-          return Driver.listFromJson(jsonObject["MRData"]["DriverTable"]["Drivers"]);
-        default:
-          throw _errorHandler.getErrorResponse(response);
-      }
+      Response response = await clientErgast.get(type: GetType.grid, year: seasonYear).timeout(const Duration(seconds: 10));
+      Map<String, dynamic> jsonObject = jsonDecode(response.body);
+      return Driver.listFromJson(jsonObject["MRData"]["DriverTable"]["Drivers"]);
     } catch (e) {
-      rethrow;
+      throw _errorHandler.handle(e);
     }
   }
 }
