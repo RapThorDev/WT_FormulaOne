@@ -7,8 +7,7 @@ import 'package:f1_application/lib/model/season.dart';
 class RequestHandler{
   Future<dynamic> _handle(request) async {
     try {
-      final result = await request();
-      return result;
+      return await request();
     } catch (e) {
       throw ErrorHandler().handle(e);
     }
