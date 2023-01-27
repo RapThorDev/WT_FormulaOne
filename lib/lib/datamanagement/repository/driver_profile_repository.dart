@@ -11,7 +11,7 @@ class DriverProfileRepository {
   final RequestHandler _handler = RequestHandler();
 
   Future<String> fetchGoogleImageUrl(String driverLastName) async {
-    return await _handler.handleFetchGoogleImageUrl(() async {
+    return await _handler.handle(() async {
       Response response = await clientGoogleSearch.get(queryString: driverLastName).timeout(const Duration(seconds: 10));
       Map<String, dynamic> jsonObject = jsonDecode(response.body);
       return jsonObject["items"][0]["pagemap"]["cse_image"][0]["src"] ?? "";

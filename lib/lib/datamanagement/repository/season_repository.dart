@@ -11,7 +11,7 @@ class SeasonRepository {
   final RequestHandler _handler = RequestHandler();
 
   Future<List<Season>> fetchSeasons() async {
-    return await _handler.handleFetchSeason(() async {
+    return await _handler.handle(() async {
       Response response = await clientErgast.get(type: GetType.season).timeout(const Duration(seconds: 10));
       Map<String, dynamic> jsonObject = jsonDecode(response.body);
       return Season.listFromJson(jsonObject["MRData"]["SeasonTable"]["Seasons"]);

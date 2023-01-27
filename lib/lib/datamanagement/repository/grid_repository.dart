@@ -11,7 +11,7 @@ class GridRepository {
   final RequestHandler _handler = RequestHandler();
 
   Future<List<Driver>> fetchGrid(int  seasonYear) async {
-    return await _handler.handleFetchGrid(() async {
+    return await _handler.handle(() async {
       Response response = await clientErgast.get(type: GetType.grid, year: seasonYear).timeout(const Duration(seconds: 10));
       Map<String, dynamic> jsonObject = jsonDecode(response.body);
       return Driver.listFromJson(jsonObject["MRData"]["DriverTable"]["Drivers"]);
