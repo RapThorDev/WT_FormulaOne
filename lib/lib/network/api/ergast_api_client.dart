@@ -12,11 +12,7 @@ enum GetType {
 class ErgastApiClient {
   String baseUrl = Constants.apiBaseURL;
 
-  Future<http.Response> get({
-    required GetType type,
-    int limit = 1000,
-    int year = 1000,
-  }) {
+  Future<http.Response> get({required GetType type, int limit = 1000, int year = 1000}) {
     String route;
 
     switch(type) {

@@ -22,13 +22,25 @@ class GridScreen extends StatefulWidget {
 class _GridScreenState extends State<GridScreen> {
   TextEditingController searchTextController = TextEditingController();
   String searchTextString = "";
+  GridViewModel? _viewModel;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<GridViewModel>(context, listen: false).fetchGrid(int.parse(widget.season!.year));
+      _viewModel = Provider.of<GridViewModel>(context, listen: false);
+      _viewModel!.fetchGrid(int.parse(widget.season!.year));
     });
+  }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_viewModel == null) {
+      setState(() {
+        _viewModel = Provider.of<GridViewModel>(context);
+      });
+    }
   }
 
   @override
@@ -70,12 +82,10 @@ class _GridScreenState extends State<GridScreen> {
   }
 
   Widget _summary() {
-    final gridViewModel = Provider.of<GridViewModel>(context);
-
     if (
-    gridViewModel.isGridFetching
+    _viewModel!.isGridFetching
     || searchTextString.isNotEmpty
-    || gridViewModel.drivers.isEmpty
+    || _viewModel!.drivers.isEmpty
     ) {
       return Container();
     }
@@ -84,13 +94,11 @@ class _GridScreenState extends State<GridScreen> {
   }
 
   Widget _drivers() {
-    final gridViewModel = Provider.of<GridViewModel>(context);
-
-    if (gridViewModel.isGridFetching) {
+    if (_viewModel!.isGridFetching) {
       return const FullPageLoading();
     }
 
-    if (gridViewModel.drivers.isEmpty) {
+    if (_viewModel!.drivers.isEmpty) {
       return const SizedBox(
         child: Text(
           "In this season not found any driver\n"
@@ -102,9 +110,9 @@ class _GridScreenState extends State<GridScreen> {
     List<Widget> driverCards = [];
 
     if (searchTextString.isEmpty) {
-      driverCards = gridViewModel.drivers.map((driver) => DriverCard(driver: driver)).toList();
+      driverCards = _viewModel!.drivers.map((driver) => DriverCard(driver: driver)).toList();
     } else {
-      driverCards = gridViewModel.relevantDriversByExpression(searchTextString).map((Driver driver) => DriverCard(driver: driver)).toList();
+      driverCards = _viewModel!.relevantDriversByExpression(searchTextString).map((Driver driver) => DriverCard(driver: driver)).toList();
     }
 
     if (driverCards.isEmpty) {
